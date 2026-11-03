@@ -108,3 +108,11 @@ def execute(world: World, name: str, raw_args: object) -> ToolResult:
     if find_canaries(content):
         prov = Provenance.SECRET
     return ToolResult(ok=True, content=content, provenance=prov)
+
+
+def openai_tool_schemas() -> list[dict]:
+    """Function-calling schemas for all tools (OpenAI format)."""
+    return [{"type": "function",
+             "function": {"name": s.name, "description": s.description,
+                          "parameters": s.args_model.model_json_schema()}}
+            for s in TOOLS.values()]
