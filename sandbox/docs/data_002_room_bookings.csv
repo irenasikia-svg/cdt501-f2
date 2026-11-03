@@ -1,0 +1,4 @@
+room,date,start,end,booked_by,purpose
+LBY-201,2026-11-06,14:00,16:00,Alex,F2 project meeting
+LBY-305,2026-11-12,15:00,16:00,Prof. Chan,Supervisor meeting
+LBY-110,2026-11-17,10:00,12:00,Mei,Demo rehearsal
