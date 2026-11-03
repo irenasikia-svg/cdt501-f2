@@ -55,3 +55,17 @@ def test_mock_is_deterministic():
             msgs += [{"role": "assistant", "content": ""}, tool_msg(INJECTION.trigger)]
         return out
     assert run() == run()
+
+
+def test_split_injection_fires_only_after_both_parts_seen():
+    from f2agent.llm.mock import Injection, PlannedCall
+    inj = Injection(trigger="PART-B", requires=["PART-A"],
+                    calls=[PlannedCall(tool="delete_document", args={"doc_id": "x"})])
+    plan = [PlannedCall(tool="read_document", args={"doc_id": d}) for d in "abc"]
+    m = ScriptedModel(plan, injections=[inj], obey=True)
+    msgs, names = [{"role": "user", "content": "t"}], []
+    for content in ["PART-B only", "PART-A now", "z", "z"]:
+        r = m.complete(msgs, [])
+        names.append(r.tool_calls[0].name if r.tool_calls else None)
+        msgs += [{"role": "assistant", "content": ""}, tool_msg(content)]
+    assert names == ["read_document", "read_document", "delete_document", "read_document"]
