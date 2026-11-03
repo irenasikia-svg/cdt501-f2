@@ -1,0 +1,16 @@
+# secrets
+.env
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+dist/
+*.egg-info/
+# per-run working copies of the sandbox world
+runs_tmp/
+logs/*.jsonl
+# OS
+.DS_Store
