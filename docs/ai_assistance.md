@@ -6,6 +6,9 @@ Which AI agent/model produced what, and how the team verified it. Completed in P
 |---|---|---|---|
 | `docs/plan.md` | Claude Code (cloud session) | ced answered P0 questions, approved plan | review by ced |
 | Repo scaffold (P1) | Claude Code (cloud session) | ced to review | `scripts/check.sh` output |
+| Sandbox, tools, audit log (P2) | Claude Code (cloud session) | ced approved phase | unit + property tests |
+| Agent loop, backends, C0/C1 (P3) | Claude Code (cloud session) | ced approved phase | unit tests, mock smoke script |
+| Policy engine C2, A1/A2, detector D (P4) | Claude Code (cloud session) | ced to review | unit + Hypothesis tests; manual review `docs/security_review.md` |
 
 ## Notes
 - The trailofbits skills named in the kickoff prompt (`property-based-testing`,
