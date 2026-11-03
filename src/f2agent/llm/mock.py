@@ -3,7 +3,8 @@
 * mock_compliant: executes the trusted task's reference plan and nothing else.
 * mock_gullible: same plan, but obeys every injected instruction it actually *sees* in a tool
   result (worst case). Containment must therefore come from outside the model.
-Argument templates: "{last}" = content of the latest tool result (delimiters removed).
+Argument templates: "{last}" = latest tool result of the same source (the user's plan or the
+injection), delimiters removed, so obeying an injection does not corrupt the legitimate output.
 """
 
 from __future__ import annotations
@@ -32,27 +33,30 @@ class ScriptedModel:
     def __init__(self, plan: list[PlannedCall], injections=(), obey: bool = False,
                  name: str = "mock"):
         self.name = self.model_id = name
-        self.queue = deque(plan)
+        self.queue = deque(("plan", c) for c in plan)
         self.pending = list(injections) if obey else []
-        self.seen_upto, self.last, self.n = 0, "", 0
+        self.seen_upto, self.n, self.source = 0, 0, "plan"
+        self.last = {"plan": "", "injection": ""}
 
     def _observe(self, messages: list[dict]) -> None:
         for msg in messages[self.seen_upto:]:
             if msg.get("role") == "tool":
-                self.last = unwrap(msg.get("content") or "")
-                self._maybe_obey(self.last)
+                text = unwrap(msg.get("content") or "")
+                self.last[self.source] = text
+                self._maybe_obey(text)
         self.seen_upto = len(messages)
 
     def _maybe_obey(self, text: str) -> None:
         for inj in [i for i in self.pending if i.trigger in text]:
             self.pending.remove(inj)
-            self.queue.extendleft(reversed(inj.calls))  # obey immediately
+            self.queue.extendleft(("injection", c) for c in reversed(inj.calls))  # obey now
 
     def complete(self, messages: list[dict], tools: list[dict]) -> LLMResponse:
         self._observe(messages)
         if not self.queue:
             return LLMResponse(content="Done.")
-        call, self.n = self.queue.popleft(), self.n + 1
-        args = {k: v.replace("{last}", self.last) if isinstance(v, str) else v
+        (self.source, call), self.n = self.queue.popleft(), self.n + 1
+        last = self.last[self.source]
+        args = {k: v.replace("{last}", last) if isinstance(v, str) else v
                 for k, v in call.args.items()}
         return LLMResponse(content="", tool_calls=[ToolCall(f"call_{self.n}", call.tool, args)])

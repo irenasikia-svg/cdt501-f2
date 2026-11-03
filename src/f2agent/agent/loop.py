@@ -70,6 +70,8 @@ def _handle_call(call: ToolCall, world, guard, cond, audit, history, ep) -> str:
               "block", rule_id=decision.rule_id, reason=decision.reason,
               latency_ms=(time.perf_counter() - t0) * 1000)
     result = execute(world, call.name, call.arguments) if decision.allow else None
+    if result is not None and cond.result_filter:
+        result = cond.result_filter(result)
     if result is not None:
         history.append(result)
     ep.steps.append(Step(call.name, call.arguments, decision.allow, decision.rule_id,

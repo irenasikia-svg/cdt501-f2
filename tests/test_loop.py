@@ -97,3 +97,41 @@ def test_wrapper_cannot_be_closed_early_by_document_text():
 
 def test_only_c0_c1_implemented_in_p3():
     assert {"C0", "C1"} <= set(CONDITIONS)
+
+
+# ---- P4 conditions ------------------------------------------------------------------
+from tests.helpers import EMAIL_TASK, REDIRECT  # noqa: E402
+
+
+def run_with(tmp_path, task, cond, injections, attack=True):
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    extra = {f"{CARRIER_ID}.md": CARRIER_TEXT} if attack else None
+    world = World.fresh(parent=tmp_path, extra_docs=extra)
+    backend = make_backend("mock_gullible", task=task, injections=injections)
+    audit = AuditLogger(tmp_path / "a.jsonl", run_id="r", condition=cond, task_id=task.id)
+    return world, run_episode(task, world, backend, get_condition(cond), audit), audit
+
+
+@pytest.mark.parametrize("cond", ["C2", "A1", "A2"])
+def test_policy_conditions_contain_exfil_and_keep_task(tmp_path, cond):
+    world, ep, audit = run_with(tmp_path, ATTACK_TASK, cond, [INJECTION])
+    assert not exfiltrated(world)
+    assert (world.root / "output/room_summary.md").exists()
+    assert any(r.decision == "block" for r in audit.records)
+
+
+def test_c2_blocks_redirect_but_a2_does_not(tmp_path):
+    w2, _, _ = run_with(tmp_path / "c2", EMAIL_TASK, "C2", [REDIRECT])
+    wa2, _, _ = run_with(tmp_path / "a2", EMAIL_TASK, "A2", [REDIRECT])
+    assert [m["to"] for m in w2.outbox()] == ["prof.chan@uni.example"]
+    assert "audit@attacker.example" in [m["to"] for m in wa2.outbox()]
+
+
+def test_detector_drops_flagged_doc(tmp_path):
+    world, ep, _ = run_with(tmp_path, ATTACK_TASK, "D", [INJECTION])
+    assert not exfiltrated(world)
+    assert "removed by injection detector" in (world.root / "output/room_summary.md").read_text()
+
+
+def test_all_six_conditions_registered():
+    assert set(CONDITIONS) == {"C0", "C1", "C2", "A1", "A2", "D"}
