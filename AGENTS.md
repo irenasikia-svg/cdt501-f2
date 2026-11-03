@@ -57,7 +57,7 @@ uv sync                      # install deps (incl. dev group)
 bash scripts/check.sh        # fast gate, no API key needed
 uv run pytest                # tests only
 uv run ruff check .          # lint
-uv run python scripts/smoke_c0_c1.py          # C0 vs C1 smoke check on mock models
+uv run python scripts/smoke_conditions.py     # all conditions, smoke check on mock models
 uv run python scripts/probe_llm.py --yes      # 1 real API call: does the model emit tool calls?
 ```
 
