@@ -59,6 +59,9 @@ uv run pytest                # tests only
 uv run ruff check .          # lint
 uv run python scripts/smoke_conditions.py     # all conditions, smoke check on mock models
 uv run python scripts/probe_llm.py --yes      # 1 real API call: does the model emit tool calls?
+uv run python scripts/build_dev_data.py       # regenerate benign tasks + dev attacks (then re-freeze)
+uv run python scripts/freeze_data.py          # write data/MANIFEST.sha256 (human team)
+uv run python scripts/verify_data.py          # check frozen data is unchanged
 ```
 
 ## Conditions
