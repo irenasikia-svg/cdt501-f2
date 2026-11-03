@@ -1,1 +1,1 @@
-"""f2agent.eval package."""
+"""Evaluation: datasets, checkers, metrics."""
