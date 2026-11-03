@@ -1,1 +1,1 @@
-"""f2agent.agent package."""
+"""Agent loop, tasks and experimental conditions."""
