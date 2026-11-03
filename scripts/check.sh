@@ -15,13 +15,7 @@ run_step() {  # run_step <name> <command...>
 run_step "ruff check" uv run ruff check .
 run_step "pytest (unit + property, network blocked)" uv run pytest
 
-echo "== data manifest"
-if [[ -f data/MANIFEST.sha256 ]]; then
-  if sha256sum --quiet -c data/MANIFEST.sha256; then record "data manifest" PASS
-  else record "data manifest" FAIL; fi
-else
-  echo "data/MANIFEST.sha256 not created yet (P5)"; record "data manifest" SKIP
-fi
+run_step "data manifest (frozen files unchanged)" uv run python scripts/verify_data.py
 
 echo "== end-to-end mock run (dev set)"
 echo "not implemented yet (P4-P6)"; record "e2e mock: C0/C1 attacked, C2 ASR=0, C2 BU>=threshold" SKIP
