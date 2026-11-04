@@ -11,6 +11,7 @@ dist/
 *.egg-info/
 # per-run working copies of the sandbox world
 runs_tmp/
-logs/*.jsonl
+logs/*
+!logs/.gitkeep
 # OS
 .DS_Store
