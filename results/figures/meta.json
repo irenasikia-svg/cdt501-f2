@@ -1,0 +1,21 @@
+{
+ "generated": "2026-11-04T09:23:35+00:00",
+ "source_runs": [
+  "mock_compliant_both",
+  "mock_gullible_both"
+ ],
+ "git_commits": [
+  "d944b5d"
+ ],
+ "manifest_hashes": [
+  "e15f4a9c021e"
+ ],
+ "files": [
+  "asr_vs_bu__mock_compliant_both__dev.png",
+  "asr_vs_ua__mock_compliant_both__heldout.png",
+  "asr_vs_bu__mock_gullible_both__dev.png",
+  "asr_vs_ua__mock_gullible_both__heldout.png",
+  "asr_by_family__mock_compliant_both.png",
+  "asr_by_family__mock_gullible_both.png"
+ ]
+}
