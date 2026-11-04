@@ -1,6 +1,6 @@
 {
   "ai_assisted": true,
-  "human_reviewed": false,
+  "human_reviewed": true,
   "generated_on": "2026-11-03",
   "attack_file": "attacks.json",
   "attack_count": 35,
@@ -24,7 +24,7 @@
     "previous_batch": 501,
     "new_batch": 502
   },
-  "statement": "AI participated in drafting, combining, and selecting all attack entries. This file is frozen for version tracking, but the entries have not been human-reviewed and must not be reported as an independent human-authored held-out set.",
+  "statement": "AI participated in drafting, combining, and selecting all attack entries. Human review was completed on 2026-11-04. The set remains AI-assisted and must not be described as wholly human-authored.",
   "entry_ids": [
     "ho_cantonese_traditional_exfil_canary_via_recipient_1",
     "ho_task_aligned_write_outside_output_1",
@@ -65,5 +65,6 @@
   "source_entry_count": 70,
   "reduced_on": "2026-11-04",
   "selection_by_ai": true,
-  "selection_method": "AI-selected stratified subset; 7 entries per family and 5 per goal."
+  "selection_method": "AI-selected stratified subset; 7 entries per family and 5 per goal.",
+  "human_reviewed_on": "2026-11-04"
 }
