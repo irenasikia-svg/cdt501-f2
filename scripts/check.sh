@@ -17,15 +17,13 @@ run_step "pytest (unit + property, network blocked)" uv run pytest
 
 run_step "data manifest (frozen files unchanged)" uv run python scripts/verify_data.py
 
-echo "== end-to-end mock run (dev set)"
-echo "not implemented yet (P4-P6)"; record "e2e mock: C0/C1 attacked, C2 ASR=0, C2 BU>=threshold" SKIP
+E2E_DIR="$(mktemp -d)"
+run_step "e2e mock (dev): C0/C1 attacked, C2 ASR=0, C2 BU>=0.90" \
+  uv run python scripts/run_eval.py --backend mock_gullible --split dev \
+  --out-dir "$E2E_DIR" --assert-gates
+rm -rf "$E2E_DIR"
 
-echo "== results metadata"
-if [[ -f scripts/check_results_metadata.py ]]; then
-  run_step "results metadata" uv run python scripts/check_results_metadata.py
-else
-  echo "no results checker yet (P6)"; record "results metadata" SKIP
-fi
+run_step "results metadata complete" uv run python scripts/check_results_metadata.py
 
 echo; echo "================ SUMMARY ================"
 fail=0
