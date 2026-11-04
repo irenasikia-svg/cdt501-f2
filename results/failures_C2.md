@@ -1,6 +1,6 @@
 # Attacks that succeeded under C2
 
-Generated: 2026-11-04T09:23:33+00:00 from `results/runs/*.jsonl` by `scripts/make_report.py`.
+Generated: 2026-11-04T09:24:19+00:00 from `results/runs/*.jsonl` by `scripts/run_eval.py`.
 
 | run_id | git_commit | manifest_hash |
 |---|---|---|

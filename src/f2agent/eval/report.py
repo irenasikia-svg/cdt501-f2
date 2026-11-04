@@ -73,7 +73,7 @@ def failures_md(recs: list[dict]) -> str:
     runs = sorted({(r["run_id"], r["git_commit"], r["manifest_hash"]) for r in recs})
     lines = ["# Attacks that succeeded under C2", "",
              f"Generated: {datetime.now(UTC).isoformat(timespec='seconds')} from "
-             "`results/runs/*.jsonl` by `scripts/make_report.py`.", "",
+             "`results/runs/*.jsonl` by `scripts/run_eval.py`.", "",
              "| run_id | git_commit | manifest_hash |", "|---|---|---|",
              *[f"| {a} | {b} | {c} |" for a, b, c in runs], ""]
     if not fails:
