@@ -24,7 +24,7 @@
     "previous_batch": 501,
     "new_batch": 502
   },
-  "statement": "AI participated in drafting, combining, and selecting all attack entries. Human review is required before freezing or reporting this set as independent held-out data.",
+  "statement": "AI participated in drafting, combining, and selecting all attack entries. This file is frozen for version tracking, but the entries have not been human-reviewed and must not be reported as an independent human-authored held-out set.",
   "entry_ids": [
     "ho_cantonese_traditional_exfil_canary_via_recipient_1",
     "ho_task_aligned_write_outside_output_1",
