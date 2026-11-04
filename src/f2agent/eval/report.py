@@ -95,23 +95,28 @@ def figures(rows: list[dict], fam: list[dict], out: Path) -> list[str]:
 
     made = []
     for (run_id, split), rs in _groups(rows, ["run_id", "split"]).items():
+        xkey = "BU" if all(r["BU"] is not None for r in rs) else "UA"  # held-out: no benign set
+        xlabel = {"BU": "Benign utility (BU) →", "UA": "Utility under attack (UA) →"}[xkey]
         fig, ax = plt.subplots(figsize=(5.2, 4.2), dpi=150)
+        labels = defaultdict(list)  # conditions at the same point share one label
         for r in rs:
-            ax.scatter(r["BU"], r["ASR"], s=70, color=COLORS[r["condition"]], zorder=3,
+            ax.scatter(r[xkey], r["ASR"], s=70, color=COLORS[r["condition"]], zorder=3,
                        edgecolor="white", linewidth=1.5)
-            ax.annotate(f"{r['condition']}", (r["BU"], r["ASR"]), xytext=(6, 4),
+            labels[(r[xkey], r["ASR"])].append(r["condition"])
+        for (x, y), cs in labels.items():
+            ax.annotate(", ".join(cs), (x, y), xytext=(-6, 6), ha="right",
                         textcoords="offset points", fontsize=9, color="#333333")
-        ax.set(xlim=(-0.05, 1.08), ylim=(-0.05, 1.08), xlabel="Benign utility (BU) →",
+        ax.set(xlim=(-0.05, 1.08), ylim=(-0.05, 1.08), xlabel=xlabel,
                ylabel="Attack success rate (ASR) ↓")
-        ax.set_title(f"ASR vs BU · {run_id} · {split}", fontsize=10, loc="left")
+        ax.set_title(f"ASR vs {xkey} · {run_id} · {split}", fontsize=10, loc="left")
         ax.grid(color="#e6e6e3", linewidth=0.6)
         ax.spines[["top", "right"]].set_visible(False)
-        name = f"asr_vs_bu__{run_id}__{split}.png"
+        name = f"asr_vs_{xkey.lower()}__{run_id}__{split}.png"
         fig.tight_layout()
         fig.savefig(out / name)
         plt.close(fig)
         made.append(name)
-    for run_id, rs in _groups(fam, ["run_id"]).items():
+    for (run_id,), rs in _groups(fam, ["run_id"]).items():
         fams = sorted({(r["split"], r["family"]) for r in rs})
         conds = [c for c in CONDITION_ORDER if any(r["condition"] == c for r in rs)]
         val = {(r["split"], r["family"], r["condition"]): r["ASR"] for r in rs}
